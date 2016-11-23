@@ -29,7 +29,7 @@ $config['log_date_format'] 		= 'Y-m-d H:i:s';
 $config['cache_path'] 			= '';
 $config['encryption_key'] 		= "viktoredz";
 
-$config['sess_cookie_name']		= 'antrian_tangerang';
+$config['sess_cookie_name']		= 'antrian_jaktim';
 $config['sess_expiration']		= 0;
 $config['sess_encrypt_cookie']	= TRUE;
 $config['sess_use_database']	= FALSE;
