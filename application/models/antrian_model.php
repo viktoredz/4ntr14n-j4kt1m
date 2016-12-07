@@ -5,6 +5,25 @@ class Antrian_model extends CI_Model {
         parent::__construct();
     }
 
+    function loket(){
+      $tgl = date("Y-m-d");
+      $this->db->select('MAX(no)+1 as no');
+      $this->db->where('tgl',$tgl);
+
+      $data = $this->db->get('cl_loket')->row();
+
+      $no = empty($data->no) ? 1 : $data->no;
+      $add = array(
+          'tgl' => $tgl,
+          'no'  => $no
+        );
+      if($this->db->insert('cl_loket',$add)){
+        return $no;
+      }else{
+        return 0;
+      }
+    }
+
     function get_puskesmas($value=''){
       $value = "P".($value != "" ? $value : $this->session->userdata('puskesmas'));
       $this->db->where('code',$value);
@@ -20,7 +39,7 @@ class Antrian_model extends CI_Model {
 
       $district = $this->db->get('cl_district')->row();
       
-      return str_replace("Kota","Kota Administrasi ",ucwords(strtolower($district->value)));
+      return ucwords(strtolower($district->value));
     }
 
     function get_nik($id=""){
@@ -59,9 +78,14 @@ class Antrian_model extends CI_Model {
       $poli = $this->db->get('cl_clinic')->row_array();
 
       if(!isset($poli['value'])){
-        $this->db->where('is_antrian', 1);
-        $this->db->order_by('id','asc');
-        $poli = $this->db->get('cl_clinic')->row_array();
+        $poli = array(
+            'id'      => 999,
+            'kode'    => 'APOTEK',
+            'value'   => 'APOTEK'
+          );
+        // $this->db->where('is_antrian', 1);
+        // $this->db->order_by('id','asc');
+        // $poli = $this->db->get('cl_clinic')->row_array();
       }
 
       return $poli;
@@ -72,7 +96,7 @@ class Antrian_model extends CI_Model {
       $data = array();
       $dt = array();
 
-      $limit = 6;
+      $limit = 5;
       $start = $limit * $page;
 
       $this->db->select('kode');
@@ -90,6 +114,19 @@ class Antrian_model extends CI_Model {
         $dt['kode']   = $rows['kode'];
         $data[]       = $dt; 
       }
+
+
+      $this->db->select('MIN(reg_antrian) as reg_antrian,reg_antrian_poli,cl_pasien.nama');
+      $this->db->where('status_periksa',1);
+      $this->db->where('status_apotek NOT IN(0,3)');
+      $this->db->where('reg_time >', $start_date);
+      $this->db->join('cl_pasien', 'cl_pasien.cl_pid=cl_reg.cl_pid');
+      $apotek = $this->db->get('cl_reg')->row();
+
+      $apotek       = array('nomor' => !empty($apotek->nama) ? $apotek->nama : "-",
+                            'kode'  => 'APOTEK'
+                      );
+      $data[]       = $apotek; 
 
       return $data;
     }
@@ -120,13 +157,23 @@ class Antrian_model extends CI_Model {
     function get_antrian($kode){
       $start_date = mktime(0,0,0,date('m'),date('d'),date('Y'));
 
-      $this->db->select('cl_pasien.nama,cl_reg.reg_antrian,cl_reg.reg_antrian_poli');
-      $this->db->where('reg_time >', $start_date);
-      $this->db->where('status_periksa', 0);
-      $this->db->where('reg_poli', $kode);
-      $this->db->join('cl_pasien','cl_pasien.cl_pid=cl_reg.cl_pid');
-      $this->db->order_by('reg_id','asc');
-      $pasien = $this->db->get('cl_reg',5)->result_array();
+      if($kode == 'APOTEK'){
+        $this->db->select('cl_pasien.nama,cl_reg.reg_antrian,cl_reg.reg_antrian_poli');
+        $this->db->where('reg_time >', $start_date);
+        $this->db->where('status_periksa', 1);
+        $this->db->where('status_apotek NOT IN(0,3)');
+        $this->db->join('cl_pasien','cl_pasien.cl_pid=cl_reg.cl_pid');
+        $this->db->order_by('reg_id','asc');
+        $pasien = $this->db->get('cl_reg',5)->result_array();
+      }else{
+        $this->db->select('cl_pasien.nama,cl_reg.reg_antrian,cl_reg.reg_antrian_poli');
+        $this->db->where('reg_time >', $start_date);
+        $this->db->where('status_periksa', 0);
+        $this->db->where('reg_poli', $kode);
+        $this->db->join('cl_pasien','cl_pasien.cl_pid=cl_reg.cl_pid');
+        $this->db->order_by('reg_id','asc');
+        $pasien = $this->db->get('cl_reg',5)->result_array();
+      }
 
       return $pasien;
     }
