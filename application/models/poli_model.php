@@ -11,6 +11,7 @@ class Poli_model extends CI_Model {
 		$data = array();
 		$this->db->from('cl_clinic');
 		$this->db->where('type',$type);
+		$this->db->or_where('type','RD');
 		$this->db->where('keyword <> ""');
 		$query = $this->db->get();
         return $query->result();
