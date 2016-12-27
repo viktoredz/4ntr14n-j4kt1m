@@ -42,7 +42,8 @@ class Kiosk extends CI_Controller {
       	$puskesmas 			= $this->epus->get_puskesmas($valid_puskesmas);
 		$district			= $this->antrian_model->get_district();
 
-		$data['nomor'] 		= $nomor;	
+		$data['nomor'] 		= $nomor;
+		$data['tanggal'] 	= date('d M Y / H:i:s');
 		$data['puskesmas'] 	= $puskesmas->value;
 		$data['alamat'] 	= $district;
 		$print = $this->parser->parse("antrian/print_loket",$data,true);
