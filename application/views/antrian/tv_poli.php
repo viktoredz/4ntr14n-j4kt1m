@@ -12,6 +12,7 @@ foreach ($poli as $rows) { ?>
             <?php echo $rows['nomor']?>
           </h5>
         <?php }else{ ?>
+          <div style="color:black;font-size:14px;padding:0;margin-top:-6px;font-weight:bold">ANTRIAN</div>
           <h5 class="no-poli">
             <?php echo $rows['nomor']?>
           </h5>
