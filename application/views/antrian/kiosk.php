@@ -124,6 +124,7 @@
       $("#front").hide();
       $("#search").show('fade');
       $("[name='id_pasien']").focus();
+      playsound('sound1');
     });
 
     $("#btn-kembali").click(function(){
@@ -169,6 +170,13 @@
       $("#popup").jqxWindow('open');
     });
   });
+  
+  function playsound(file){
+      var audioElement = document.createElement('audio');
+      audioElement.setAttribute('src', "<?php echo base_url()?>public/sound/"+file+".wav");
+      audioElement.setAttribute('autoplay', 'autoplay');
+      audioElement.play();
+  }
 
   function daftar(kode,poli){
       var nama = $("#poli-header").html();
@@ -203,6 +211,7 @@
 
     $("#search").hide();
     $("#main").show('fade');
+    playsound('sound2');
 
     var jssor_1_options = {
       $AutoPlay: true,
@@ -229,6 +238,7 @@
 
   function print(){
     setTimeout('window.location.href="<?php echo base_url();?>antrian/kiosk"', 1000);
+    playsound('sound3');
 
     $("#print_area").show();
     jQuery.print("#print_area");
