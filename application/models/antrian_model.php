@@ -134,7 +134,7 @@ class Antrian_model extends CI_Model {
 
     function get_poli_page($page){
       $page = $page+1;
-      $limit = 6;
+      $limit = 5;
       $start = $limit * ($page);
 
       $this->db->select('kode');
