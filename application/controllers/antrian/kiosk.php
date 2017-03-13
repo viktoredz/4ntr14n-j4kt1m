@@ -8,6 +8,7 @@ class Kiosk extends CI_Controller {
 	}
 
 	function index(){
+		$this->authentication->verify('antrian','show');
     	$data['title_group'] 	= "Antrian";
 		$data['title_form']  	= "Data Antrian";
 

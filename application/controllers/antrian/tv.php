@@ -7,6 +7,7 @@ class Tv extends CI_Controller {
 	}
 
 	function index(){
+      $this->authentication->verify('antrian','show');
       $data['title_group'] 	= "Antrian";
       $data['title_form']   = "Data Antrian";
       $data['video']		= $this->antrian_model->get_video_playlist();
