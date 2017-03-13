@@ -105,33 +105,93 @@
   </div><!-- /.col -->
 </div><!-- /.row -->
 
+<div id="popup_info" style="display:none;">
+  <div id="popup_info_title">eClinic</div>
+  <div id="popup_info_content">
+    <div style='text-align:center'><br>
+      <br>
+      <div id="info-res"></div>
+      <br>
+      <button class='btn btn-md btn-success' id="btn-reset-ok"><i class="fa fa-thumbs-up"></i> OK</button>
+    </div>
+  </div>
+</div>
+
+<div id="popup" style="display:none;">
+  <div id="popup_title">eClinic</div>
+  <div id="popup_content">
+    <div style='text-align:center'><br>
+      <button class='btn btn-md btn-success' id="btn-on"><i class="fa fa-volume-up"></i> Panggilan On</button>
+      <button class='btn btn-md btn-warning' id="btn-off"><i class="fa fa-volume-off"></i> Panggilan Off</button>
+      <br>
+      <br>
+      <button class='btn btn-md btn-danger' id="btn-reset-call"><i class="fa fa-recycle"></i> Reset Panggilan</button>
+
+    </div>
+  </div>
+</div>
 <!-- Main row -->
 <script>
   $(function () { 
     $("#menu_dashboard").addClass("active");
     $("#menu_morganisasi").addClass("active");
 
+    $("#popup_info").jqxWindow({
+      theme: theme, resizable: false,
+      width: 300,
+      height: 150,
+      isModal: true, autoOpen: false, modalOpacity: 0.4
+    });
+
+    $("#popup").jqxWindow({
+      theme: theme, resizable: false,
+      width: 300,
+      height: 150,
+      isModal: true, autoOpen: false, modalOpacity: 0.4
+    });
+
     $("#toogle_sound").click(function(){
-      if($("[name='status_panggilan']").val()==0){
+      $("#popup").jqxWindow('open');
+    });
+
+    $("#btn-on").click(function(){
         panggilan(1);
         $("[name='status_panggilan']").val(1);
-      }else{
+        close_popup();
+    });
+
+    $("#btn-off").click(function(){
         panggilan(0);
         $("[name='status_panggilan']").val(0);
-      }
+        close_popup();
     });
-  });
 
+    $("#btn-reset-ok").click(function(){
+        $("#popup_info").jqxWindow('close');
+        panggilan(1);
+        $("[name='status_panggilan']").val(1);
+    });
 
-  $.get("<?php echo base_url()?>morganisasi/antrian", function(res){
-    $("#antrian").html(res);
-  });
+    $("#btn-reset-call").click(function(){
+        close_popup();
 
-  setInterval( function() {
+        $.get("<?php echo base_url()?>morganisasi/panggilan_reset", function(res){
+          $("#info-res").html(res);
+          $("#popup_info").jqxWindow('open');
+        });
+    });
+
     $.get("<?php echo base_url()?>morganisasi/antrian", function(res){
       $("#antrian").html(res);
     });
-   },5000);
+
+    setInterval( function() {
+      $.get("<?php echo base_url()?>morganisasi/antrian", function(res){
+        $("#antrian").html(res);
+      });
+     },5000);
+
+  });
 
   function panggilan(status){
     if(status==1){
@@ -153,4 +213,8 @@
       });
     }
   }
+
+  function close_popup(){
+    $("#popup").jqxWindow('close');
+  }  
 </script>

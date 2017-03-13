@@ -43,6 +43,14 @@ class Morganisasi extends CI_Controller {
 		}	
 	}
 
+	function panggilan_reset(){
+		if($this->morganisasi_model->reset_antrian()){
+			echo "Panggilan berhasil di Reset.";
+		}else{
+			echo "Maaf, terjadi kesalahan sistem.";
+		}
+	}
+
 	function slice($panggilan){
 		$nomor = isset($panggilan['reg_antrian_poli']) ? $panggilan['reg_antrian_poli'] : 0;
 		//if($nomor==3) $nomor = 567;

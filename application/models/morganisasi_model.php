@@ -39,6 +39,13 @@ class Morganisasi_model extends CI_Model {
       	return $data;
     }
 
+    function reset_antrian(){
+    	$data['status_panggil'] = '1';
+    	
+    	$this->db->where('status_panggil','0');
+    	return $this->db->update('cl_panggilan',$data);
+    }
+
     function get_antrian(){
     	$tgl = "RJ".date("Ymd");
     	$this->db->like('reg_id',$tgl);
