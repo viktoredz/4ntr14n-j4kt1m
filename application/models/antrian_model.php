@@ -24,6 +24,13 @@ class Antrian_model extends CI_Model {
       }
     }
 
+    function get_pasien($cl_pid){
+      $this->db->where('cl_pid',$cl_pid);
+      $data = $this->db->get('cl_pasien')->row_array();
+
+      return $data;
+    }
+
     function get_puskesmas($value=''){
       $value = "P".($value != "" ? $value : $this->session->userdata('puskesmas'));
       $this->db->where('code',$value);

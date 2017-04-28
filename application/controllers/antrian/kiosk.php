@@ -117,6 +117,7 @@ class Kiosk extends CI_Controller {
 		}
 
 		$data['cl_pid'] 	= $cl_pid;
+      	$data['pasien'] 	= $this->antrian_model->get_pasien($cl_pid);
 		$data['puskesmas'] 	= $puskesmas->value;
 		$data['alamat'] 	= $district;
 

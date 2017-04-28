@@ -5,6 +5,9 @@
     ===========================<br>
     Nomor Antrian<br>
   <div style="font-size:50px;font-weight:bold">{nomor}</div>
+  <?php if(!isset($pasien['bpjs']) || $pasien['bpjs'] == ""){ ?>
+  <div>PASIEN UMUM<br><b>Silahkan Menuju LOKET untuk melakukan PEMBAYARAN</b><br><br></div>
+  <?php } ?>
   <div style="text-align:left">
     <div class="row">
       <div class="col-xs-3">Poli</div>
