@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `epus_antrian_3173`
+-- Database: `epus_antrian_3172`
 --
 
 -- --------------------------------------------------------
@@ -49,8 +49,8 @@ INSERT INTO `app_config` (`key`, `value`) VALUES
 ('theme_admin', '2'),
 ('description', 'ePuskesmas Antrian'),
 ('keywords', 'ePuskesmas Antrian'),
-('district', '3173'),
-('cl_phc', 'P3173020201');
+('district', '3172'),
+('cl_phc', 'P3172060201');
 
 -- --------------------------------------------------------
 
@@ -287,7 +287,7 @@ CREATE TABLE `app_users_list` (
 --
 
 INSERT INTO `app_users_list` (`username`, `code`, `level`, `password`, `status_active`, `status_aproved`, `online`, `last_login`, `last_active`, `datereg`) VALUES
-('antrian', '3173020201', 'administrator', 'e7b53e05a7aa52551333871ca8943d8a8d380f57', 1, 1, 1, 1493708837, 1493711950, NULL);
+('antrian', '3172060201', 'administrator', 'e7b53e05a7aa52551333871ca8943d8a8d380f57', 1, 1, 1, 1493708837, 1493711693, NULL);
 
 -- --------------------------------------------------------
 
@@ -309,7 +309,7 @@ CREATE TABLE `app_users_profile` (
 --
 
 INSERT INTO `app_users_profile` (`username`, `code`, `nama`, `phone_number`, `email`, `status`) VALUES
-('antrian', '3173020201', 'administrator', NULL, NULL, 1);
+('antrian', '3172060201', 'administrator', NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -7975,7 +7975,7 @@ CREATE TABLE `cl_phc` (
 --
 
 INSERT INTO `cl_phc` (`code`, `value`, `keyword`) VALUES
-('P3173020201', 'KEC. MENTENG', 'PKCM');
+('P3172060201', 'KEC. JATINEGARA', 'PKCM');
 
 -- --------------------------------------------------------
 
@@ -7997,7 +7997,7 @@ CREATE TABLE `cl_phc_bpjs` (
 --
 
 INSERT INTO `cl_phc_bpjs` (`code`, `server`, `username`, `password`, `consid`, `secretkey`) VALUES
-('P3173020201', 'http://api.bpjs-kesehatan.go.id/pcare-rest/v1/', NULL, NULL, NULL, NULL);
+('P3172060201', 'http://api.bpjs-kesehatan.go.id/pcare-rest/v1/', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
