@@ -26,21 +26,61 @@ class Morganisasi extends CI_Controller {
 
 	function panggilan($status=1){
 		if($status == 1){
-			$data 			= array();
-			$panggilan		= $this->morganisasi_model->get_panggilan();
-			$data['nama'] 	= isset($panggilan['nama']) ? $panggilan['nama'] : "Panggilan Kosong";
-			$data['poli'] 	= isset($panggilan['reg_poli']) ? "Poli : ".$panggilan['reg_poli'] : "";
-			$data['nomor'] 	= isset($panggilan['reg_antrian_poli']) ? "Nomor : ".$panggilan['reg_antrian_poli'] : "";
-			$data['nomor_slice']	= $this->slice($panggilan);
-			$data['reg_poli']		= isset($panggilan['reg_poli']) ? $panggilan['reg_poli'] : "";
+			$data 		= array();
+			$loket		= $this->morganisasi_model->get_panggilan_loket();
 
-			if(isset($panggilan['panggilan_id'])) $this->morganisasi_model->call_antrian($panggilan['panggilan_id']);
+			if(is_array($loket) && isset($loket['reg_id'])){
 
-			echo $this->parser->parse("antrian/show_panggilan",$data,true);
+				$data['poli'] 			= "LOKET";
+				$data['nomor'] 			= $loket['reg_id'];
+				$data['nomor_slice']	= $this->slice($data['nomor']);
+				$data['loket']			= $loket['loket'];
+
+				if(isset($loket['panggilan_id'])) $this->morganisasi_model->call_antrian($loket['panggilan_id']);
+
+				echo $this->parser->parse("antrian/show_loket_panggilan",$data,true);
+			}else{
+				$panggilan		= $this->morganisasi_model->get_panggilan();
+				$data['nama'] 	= isset($panggilan['nama']) ? $panggilan['nama'] : "Panggilan Kosong";
+				$data['poli'] 	= isset($panggilan['reg_poli']) ? "Poli : ".$panggilan['reg_poli'] : "";
+				$data['nomor'] 	= isset($panggilan['reg_antrian_poli']) ? "Nomor : ".$panggilan['reg_antrian_poli'] : "";
+
+				$nomor 					= isset($panggilan['reg_antrian_poli']) ? $panggilan['reg_antrian_poli'] : 0;
+				$data['nomor_slice']	= $this->slice($nomor);
+				$data['reg_poli']		= isset($panggilan['reg_poli']) ? $panggilan['reg_poli'] : "";
+
+				if(isset($panggilan['panggilan_id'])) $this->morganisasi_model->call_antrian($panggilan['panggilan_id']);
+
+				echo $this->parser->parse("antrian/show_panggilan",$data,true);
+			}
 		}else{
 			$data = array();
 			echo $this->parser->parse("antrian/show_panggilan_off",$data,true);
 		}	
+	}
+
+	function loket_last_no(){
+		echo $this->morganisasi_model->loket_last_no();
+	}
+
+	function loket($status=1){
+		if($status == 1){
+			$data 			= array();
+			$data['loket']	= $this->morganisasi_model->get_loket();
+
+			echo $this->parser->parse("antrian/show_loket",$data,true);
+		}else{
+			$data = array();
+			echo $this->parser->parse("antrian/show_loket_off",$data,true);
+		}	
+	}
+
+	function loket_call($no=0,$loket=1){
+		return $this->morganisasi_model->loket_call($no,$loket);
+	}
+
+	function loket_done($no=0){
+		return $this->morganisasi_model->loket_done($no);
 	}
 
 	function panggilan_reset(){
@@ -51,11 +91,8 @@ class Morganisasi extends CI_Controller {
 		}
 	}
 
-	function slice($panggilan){
-		$nomor = isset($panggilan['reg_antrian_poli']) ? $panggilan['reg_antrian_poli'] : 0;
-		//if($nomor==3) $nomor = 567;
-
-		if($nomor>0 && $nomor <= 20){
+	function slice($nomor){
+		if(($nomor>0 && $nomor <= 20) || ($nomor%10==0 && $nomor < 100)){
 			$slice = $nomor;
 		}
 		elseif($nomor>20 && $nomor < 30){
@@ -89,8 +126,8 @@ class Morganisasi extends CI_Controller {
 			$slice = '100","'.substr($nomor, -2);
 		}
 		elseif($nomor>119 && $nomor<200){
-			$arr = array('reg_antrian_poli'=>substr($nomor, -2));
-			$slice = '100","'.$this->slice($arr);
+			$nomor = substr($nomor, -2);
+			$slice = '100","'.$this->slice($nomor);
 		}
 		elseif($nomor>199 && $nomor<210){
 			$slice = '200","'.substr($nomor, -1);
@@ -99,8 +136,8 @@ class Morganisasi extends CI_Controller {
 			$slice = '200","'.substr($nomor, -2);
 		}
 		elseif($nomor>219 && $nomor<300){
-			$arr = array('reg_antrian_poli'=>substr($nomor, -2));
-			$slice = '200","'.$this->slice($arr);
+			$nomor = substr($nomor, -2);
+			$slice = '200","'.$this->slice($nomor);
 		}
 		elseif($nomor>299 && $nomor<310){
 			$slice = '300","'.substr($nomor, -1);
@@ -109,8 +146,8 @@ class Morganisasi extends CI_Controller {
 			$slice = '300","'.substr($nomor, -2);
 		}
 		elseif($nomor>319 && $nomor<400){
-			$arr = array('reg_antrian_poli'=>substr($nomor, -2));
-			$slice = '300","'.$this->slice($arr);
+			$nomor = substr($nomor, -2);
+			$slice = '300","'.$this->slice($nomor);
 		}
 		elseif($nomor>399 && $nomor<410){
 			$slice = '400","'.substr($nomor, -1);
@@ -119,8 +156,8 @@ class Morganisasi extends CI_Controller {
 			$slice = '400","'.substr($nomor, -2);
 		}
 		elseif($nomor>419 && $nomor<500){
-			$arr = array('reg_antrian_poli'=>substr($nomor, -2));
-			$slice = '400","'.$this->slice($arr);
+			$nomor = substr($nomor, -2);
+			$slice = '400","'.$this->slice($nomor);
 		}
 		elseif($nomor>599 && $nomor<510){
 			$slice = '500","'.substr($nomor, -1);
@@ -129,8 +166,8 @@ class Morganisasi extends CI_Controller {
 			$slice = '500","'.substr($nomor, -2);
 		}
 		elseif($nomor>519 && $nomor<600){
-			$arr = array('reg_antrian_poli'=>substr($nomor, -2));
-			$slice = '500","'.$this->slice($arr);
+			$nomor = substr($nomor, -2);
+			$slice = '500","'.$this->slice($nomor);
 		}else{
 			$slice = "";
 		}

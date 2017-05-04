@@ -29,6 +29,9 @@
   <div class="col-md-3 col-sm-6 col-xs-12">
     <input type="hidden" name="status_panggilan" value="0">
     <input type="hidden" name="status_panggilan_interval">
+    <input type="hidden" name="status_loket" value="0">
+    <input type="hidden" name="status_loket_interval">
+    <input type="hidden" name="last_no" value="0">
     <a href="#" id="toogle_sound">
     <div class="info-box">
       <span class="info-box-icon bg-yellow"><i class="fa fa-bullhorn"></i></span>
@@ -83,6 +86,23 @@
         </div><!-- /.box-body -->
     </div><!-- /.box -->
   </div><!-- /.col -->
+
+  <div class="col-md-3">
+    <div class="box">
+      <div class="box-header with-border">
+        <h3 class="box-title">Antrian Loket </h3>
+        <div class="box-tools pull-right">
+          <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div>
+      </div>
+        <div class="box-body" id="loket" style="text-align:center;min-height:245px">
+          <div style="font-size:70px;margin-top:20px;color:red">
+            <i class="fa fa-volume-off"></i>
+          </div>
+          <label>Antrian Loket<br>Not Running</label>
+        </div><!-- /.box-body -->
+    </div>
+  <!--
   <div class="col-md-3">
     <div class="box">
       <div class="box-header with-border">
@@ -91,7 +111,7 @@
           <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
           <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
         </div>
-      </div><!-- /.box-header -->
+      </div>
         <div class="box-body">
           <?php foreach ($poli as $rows) {
           ?>
@@ -100,9 +120,9 @@
             </div>
           <?php
           }?>
-        </div><!-- /.box-body -->
-    </div><!-- /.box -->
-  </div><!-- /.col -->
+        </div>
+    </div>
+  </div>-->
 </div><!-- /.row -->
 
 <div id="popup_info" style="display:none;">
@@ -126,12 +146,71 @@
       <br>
       <br>
       <button class='btn btn-md btn-danger' id="btn-reset-call"><i class="fa fa-recycle"></i> Reset Panggilan</button>
-
+      <hr>
+      <button class='btn btn-md btn-success' id="btn-loketon"><i class="fa fa-volume-up"></i> Loket On</button>
+      <button class='btn btn-md btn-warning' id="btn-loketoff"><i class="fa fa-volume-off"></i> Loket Off</button>
     </div>
   </div>
 </div>
+
+<div id="popup_loket" style="display:none;">
+  <div id="popuploket_title">eClinic</div>
+  <div id="popuploket_content">
+    <div style='text-align:center;font-weight:bold;font-size:18px;color:#555555;padding:10px' id="nomor_loket"></div>
+    <input type='hidden' name='nomor_loket'>
+    <div style='text-align:center;padding-top:10px'>
+      <button class='btn btn-md btn-success' name="btn-loket-call" id="1"><i class="fa fa-volume-up"></i> Panggil Loket <b>1</b></button>
+      <button class='btn btn-md btn-success' name="btn-loket-call" id="2"><i class="fa fa-volume-up"></i> Panggil Loket <b>2</b></button>
+    </div>
+    <div style='text-align:center;padding-top:10px'>
+      <button class='btn btn-md btn-success' name="btn-loket-call" id="3"><i class="fa fa-volume-up"></i> Panggil Loket <b>3</b></button>
+      <button class='btn btn-md btn-success' name="btn-loket-call" id="4"><i class="fa fa-volume-up"></i> Panggil Loket <b>4</b></button>
+    </div>
+    <div style='text-align:center;padding-top:10px'>
+      <button class='btn btn-md btn-success' name="btn-loket-call" id="5"><i class="fa fa-volume-up"></i> Panggil Loket <b>5</b></button>
+      <button class='btn btn-md btn-danger' id="btn-loket-done"><i class="fa fa-stop"></i> Selesai</button>
+    </div>
+  </div>
+</div>
+
 <!-- Main row -->
 <script>
+  // request permission on page load
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!Notification) {
+      alert('Desktop notifications not available in your browser. Try Chromium.'); 
+      return;
+    }
+
+    if (Notification.permission !== "granted")
+      Notification.requestPermission();
+  });
+
+  function notifyMe(nomor) {
+    if (Notification.permission !== "granted")
+      Notification.requestPermission();
+    else {
+      var notification = new Notification('infoKes - eAntrian', {
+        icon: '<?php echo base_url()?>public/themes/sik/dist/img/logo.png',
+        body: "Antrian loket pasien baru ! \nNomor : "+nomor,
+      });
+
+      var audioElement = document.createElement('audio');
+      audioElement.setAttribute('src', "<?php echo base_url()?>public/sound/notif.wav");
+      audioElement.setAttribute('autoplay', 'autoplay');
+      audioElement.play();
+
+
+      notification.onclick = function () {
+        window.focus();
+      };
+
+    }
+
+  }
+
+
+
   $(function () { 
     $("#menu_dashboard").addClass("active");
     $("#menu_morganisasi").addClass("active");
@@ -146,7 +225,14 @@
     $("#popup").jqxWindow({
       theme: theme, resizable: false,
       width: 300,
-      height: 150,
+      height: 240,
+      isModal: true, autoOpen: false, modalOpacity: 0.4
+    });
+
+    $("#popup_loket").jqxWindow({
+      theme: theme, resizable: false,
+      width: 320,
+      height: 240,
       isModal: true, autoOpen: false, modalOpacity: 0.4
     });
 
@@ -163,6 +249,16 @@
     $("#btn-off").click(function(){
         panggilan(0);
         $("[name='status_panggilan']").val(0);
+        close_popup();
+    });
+
+    $("#btn-loketon").click(function(){
+        loket(1);
+        close_popup();
+    });
+
+    $("#btn-loketoff").click(function(){
+        loket(0);
         close_popup();
     });
 
@@ -193,6 +289,40 @@
 
   });
 
+  $("[name='btn-loket-call']").click(function(){
+    var loket = $(this).attr('id');
+
+    $(this).attr('class','btn btn-warning');
+    $(this).html("<i class='fa fa-volume-down'></i> Memanggil");
+    var no = $("[name='nomor_loket']").val();
+    $.get("<?php echo base_url()?>morganisasi/loket_call/"+no+"/"+loket, function(res){
+      setTimeout("return_text("+loket+")",3000);
+    });
+  });
+  
+  $("#btn-loket-done").click(function(){
+    $.get("<?php echo base_url()?>morganisasi/loket/1", function(res){
+      $("#loket").html(res);
+    });
+
+    var no = $("[name='nomor_loket']").val();
+    $.get("<?php echo base_url()?>morganisasi/loket_done/"+no, function(res){
+      close_popup_loket();
+    });
+
+
+  });
+
+  function return_text(no){
+    var text  = "<i class='fa fa-volume-up'></i> Panggil Loket <b>"+ no +"</b>";
+
+    $("[name='btn-loket-call']").each(function(){
+      if($(this).attr('id') == no){
+        $(this).html(text);
+      }
+    });
+  }
+
   function panggilan(status){
     if(status==1){
       $.get("<?php echo base_url()?>morganisasi/panggilan/1", function(res){
@@ -213,6 +343,46 @@
       });
     }
   }
+
+  function loket(status){
+    if(status==1){
+      $.get("<?php echo base_url()?>morganisasi/loket/1", function(res){
+        $("#loket").html(res);
+      });
+
+      var loketLoop = setInterval( function() {
+        $.get("<?php echo base_url()?>morganisasi/loket_last_no", function(res){
+          var last_no = $("[name='last_no']").val();
+          if(res > last_no){
+            notifyMe(res);
+          }
+          $("[name='last_no']").val(res);
+        });
+
+        $.get("<?php echo base_url()?>morganisasi/loket/1", function(res){
+          $("#loket").html(res);
+        });
+
+       },3000);
+      $("[name='status_loket_interval']").val(loketLoop);
+
+    }else{
+      clearInterval($("[name='status_loket_interval']").val());
+      $.get("<?php echo base_url()?>morganisasi/loket/0", function(res){
+        $("#loket").html(res);
+      });
+    }
+  }
+
+  function popup_loket(no){
+    $("#nomor_loket").html('Antrian Loket : '+no);
+    $("[name='nomor_loket']").val(no);
+    $("#popup_loket").jqxWindow('open');
+  }
+
+  function close_popup_loket(){
+    $("#popup_loket").jqxWindow('close');
+  }  
 
   function close_popup(){
     $("#popup").jqxWindow('close');

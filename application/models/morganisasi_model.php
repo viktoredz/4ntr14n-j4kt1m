@@ -70,6 +70,14 @@ class Morganisasi_model extends CI_Model {
 		return $data;
     }
 
+    function get_panggilan_loket(){
+    	$this->db->where('status_panggil','2');
+
+		$data = $this->db->get('cl_panggilan')->row_array();
+
+		return $data;
+    }
+
     function call_antrian($panggilan_id){
     	$data 	= array();
     	$data['status_panggil'] = 1;
@@ -77,6 +85,61 @@ class Morganisasi_model extends CI_Model {
     	$this->db->where('panggilan_id',$panggilan_id);
     	$this->db->update('cl_panggilan',$data);
     }
+
+    function get_loket(){
+    	$data 	= array();
+    	$tgl 	= date("Y-m-d");
+
+    	$this->db->where('status < 2');
+    	$this->db->where('tgl',$tgl);
+    	$this->db->limit(5,0);
+    	$this->db->order_by('no','asc');
+    	$loket = $this->db->get('cl_loket')->result_array();
+
+    	return $loket;
+    }
+
+    function loket_last_no(){
+    	$tgl 	= date("Y-m-d");
+    	$this->db->where('tgl',$tgl);
+    	$this->db->where('status','0');
+    	$this->db->order_by('no','desc');
+    	$loket = $this->db->get('cl_loket')->row();
+
+    	if(!empty($loket->no)){
+    		return $loket->no;
+    	}else{
+    		return 0;
+    	}
+    }
+
+
+	function loket_call($no=0,$loket=1){
+		$insert = array();
+		$insert['panggilan_id'] 	= time();
+		$insert['reg_id'] 			= $no;
+		$insert['status_panggil'] 	= 2;
+		$insert['loket'] 			= $loket;
+    	$this->db->insert('cl_panggilan',$insert);
+
+    	$data 	= array();
+    	$tgl 	= date("Y-m-d");
+    	$data['status'] = 1;
+
+    	$this->db->where('tgl',$tgl);
+    	$this->db->where('no',$no);
+    	return $this->db->update('cl_loket',$data);
+	}
+
+	function loket_done($no=0){
+    	$data 	= array();
+    	$tgl 	= date("Y-m-d");
+    	$data['status'] = 2;
+
+    	$this->db->where('tgl',$tgl);
+    	$this->db->where('no',$no);
+    	return $this->db->update('cl_loket',$data);
+	}
 
 	function get_profile($username=""){
 		$data = array();
