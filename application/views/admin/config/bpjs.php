@@ -1,10 +1,3 @@
-<?php if(validation_errors()!=""){ ?>
-<div class="alert alert-warning alert-dismissable" style="margin:15px">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo validation_errors()?>
-</div>
-<?php } ?>
 <section class="content">
 <form method="POST" name="frmUsers">
   <div class="row">
@@ -16,46 +9,58 @@
           <h3 class="box-title">{title_form}</h3>
         </div><!-- /.box-header -->
         <!-- form start -->
+          <div class="alert alert-warning alert-dismissable" style="margin:15px;display:none" id="result">
+            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+            <h4>  <i class="icon fa fa-check"></i> Information!</h4>
+            <span id="result_content"></span>
+          </div>
           <div class="box-body">
             <div class="form-group">
               <label for="exampleInputEmail1">Username</label>
-              <input type="text" class="form-control" name="usernamebpjs" id="usernamebpjs" placeholder="Username" value="<?php 
-            if(set_value('usernamebpjs')=="" && isset($username)){
-              echo $username;
+              <input type="text" class="form-control" name="bpjs_username" id="bpjs_username" placeholder="Username" value="<?php 
+            if(set_value('bpjs_username')=="" && isset($bpjs_username)){
+              echo $bpjs_username;
             }else{
-              echo  set_value('usernamebpjs');
+              echo  set_value('bpjs_username');
             }
             ?>">
             </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Password</label>
-              <input type="password" class="form-control" name="passwordbpjs"  id="passwordbpjs" placeholder="Password" value="<?php 
-            if(set_value('passwordbpjs')=="" && isset($password)){
-              echo $password;
+              <input type="password" class="form-control" name="bpjs_password"  id="bpjs_password" placeholder="Password" value="<?php 
+            if(set_value('bpjs_password')=="" && isset($bpjs_password)){
+              echo $bpjs_password;
             }else{
-              echo  set_value('passwordbpjs');
+              echo  set_value('bpjs_password');
             }
             ?>">
             </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Cons ID</label>
-              <input type="text" class="form-control" name="considbpjs" id="considbpjs" placeholder="Cons ID" value="<?php 
-            if(set_value('considbpjs')=="" && isset($consid)){
-              echo $consid;
+              <input type="text" class="form-control" name="bpjs_consid" id="bpjs_consid" placeholder="Cons ID" value="<?php 
+            if(set_value('bpjs_consid')=="" && isset($bpjs_consid)){
+              echo $bpjs_consid;
             }else{
-              echo  set_value('considbpjs');
+              echo  set_value('bpjs_consid');
             }
             ?>">
             </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Secret Key</label>
-              <input type="text" class="form-control" name="keybpjs" id="keybpjs" placeholder="Secret Key" value="<?php 
-            if(set_value('keybpjs')=="" && isset($secretkey)){
-              echo $secretkey;
+              <input type="text" class="form-control" name="bpjs_secret" id="bpjs_secret" placeholder="Secret Key" value="<?php 
+            if(set_value('bpjs_secret')=="" && isset($bpjs_secret)){
+              echo $bpjs_secret;
             }else{
-              echo  set_value('keybpjs');
+              echo  set_value('bpjs_secret');
             }
             ?>">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Status Cek BPJS</label>
+              <select  name="bpjs_status" id="bpjs_status" class="form-control">
+                    <option value="0" <?php echo ($bpjs_status==0 ? "selected":"") ?>>Tidak</option>
+                    <option value="1" <?php echo ($bpjs_status==1 ? "selected":"") ?>>Ya</option>
+              </select>
             </div>
           </div><!-- /.box-body -->
           <div class="box-footer">
@@ -72,7 +77,7 @@
 
 <script>
 	$(function () {	
-		$("#menu_admin_config").addClass("active");
+		$("#menu_bpjs").addClass("active");
 		$("#menu_admin_panel").addClass("active");
 
     function saved (){
@@ -80,21 +85,22 @@
         $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
         $('#biodata_notice').show();
 
-        data.append('codepus', $("#codepus").val());
-        data.append('usernamebpjs', $("[name='usernamebpjs']").val());
-        data.append('passwordbpjs', $("[name='passwordbpjs']").val());
-        data.append('considbpjs', $("[name='considbpjs']").val());
-        data.append('keybpjs', $("[name='keybpjs']").val());
+        data.append('bpjs_username', $("[name='bpjs_username']").val());
+        data.append('bpjs_password', $("[name='bpjs_password']").val());
+        data.append('bpjs_consid', $("[name='bpjs_consid']").val());
+        data.append('bpjs_secret', $("[name='bpjs_secret']").val());
+        data.append('bpjs_status', $("[name='bpjs_status']").val());
 
         $.ajax({
             cache : false,
             contentType : false,
             processData : false,
             type : 'POST',
-            url : '<?php echo base_url()?>admin_config/insertdata',
+            url : '<?php echo base_url()?>bpjs/update',
             data : data,
             success : function(response){
-                $('#content1').html(response);
+                $('#result').show();
+                $('#result_content').html(response);
             }
         });
 

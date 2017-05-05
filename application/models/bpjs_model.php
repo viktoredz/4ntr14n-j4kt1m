@@ -2,131 +2,188 @@
 class Bpjs_model extends CI_Model {
 
     var $tabel    = 'app_config';
+    var $server;
+    var $consid;
+    var $secretkey;
+    var $username;
+    var $password;
+    var $xtime;
+    var $xauth;
+    var $data;
+    var $signature;
+    var $xsign;
 
     function __construct() {
         parent::__construct();
-        $this->load->dbutil();
+
+        require_once(APPPATH.'third_party/httpful.phar');
+
+        $this->get_data_bpjs();
     }
-    
+
     function get_data_bpjs(){
-    	$data = array();
-    	$this->db->where('code',$this->session->userdata('klinik'));
-    	$query = $this->db->get('cl_clinic');
-        if ($query->num_rows() > 0){
-            $data = $query->row_array();
-        }
-        $query->free_result();    
+        $data = $this->get_data();
+
+        $this->server       = $data['bpjs_server'];
+        $this->username     = $data['bpjs_username'];
+        $this->password     = $data['bpjs_password'];
+        $this->consid       = $data['bpjs_consid'];
+        $this->secretkey    = $data['bpjs_secret'];
+        $this->xtime        = time();
+        $this->maxxtimeget  = 15;
+        $this->maxxtimepost = 120;
+        $this->xauth        = base64_encode($this->username.':'.$this->password.':095');
+        $this->data         = $this->consid."&".$this->xtime;
+        $this->signature    = hash_hmac('sha256', $this->data, $this->secretkey, true);
+        $this->xsign        = base64_encode($this->signature);
+
         return $data;
     }
-    
-    function get_server_bpjs(){
-		$data=array();
-		$this->db->where('key','bpjs_server');
-    	$query = $this->db->get('app_config');
-        if ($query->num_rows() > 0){
-            $data = $query->row_array();
-        }
-        $query->free_result();    
-        return $data['value'];
-	}
-    
-    function checkBPJS($code=""){
-        //$kode = lcfirst($code);
-        if ($this->dbutil->database_exists("epuskesmas_live_jaktim_$code"))
+
+    function getApi($url="",$ver = 1){
+       $this->get_data_bpjs();
+       if($ver!=1){
+            $this->server = str_replace("v1", "v2", $this->server);
+       }
+
+       try
         {
-            $this->load->database("epuskesmas_live_jaktim_".$code, FALSE, TRUE);
-
-            $row = array();
-            $data = $this->db->get('bpjs_setting')->result_array();
-            foreach ($data as $dt) {
-                $row[$dt['name']] = $dt['value'];
-            }
-
-            $data = array(
-                'code' => $code,
-                'server'    => $row['bpjs_server'],
-                'username'  => $row['bpjs_username'],
-                'password'  => $row['bpjs_password'],
-                'consid'    => $row['bpjs_consid'],
-                'secretkey' => $row['bpjs_secret']
-            );
-
-            $this->load->database("default", FALSE, TRUE);
-            $this->db->delete('cl_phc_bpjs', array('code' => $code));
-            $this->db->insert('cl_phc_bpjs', $data);
-
-            return $data;
-        }else{
-            $data = array(
-                'code' => "kosong",
-            );
-            return $data;
+          $response = \Httpful\Request::get($this->server.$url)
+          ->xConsId($this->consid)
+          ->xTimestamp($this->xtime)
+          ->xSignature($this->xsign)
+          ->xAuthorization("Basic ".$this->xauth)
+          ->timeout($this->maxxtimeget)
+          ->send();
+           $data = json_decode($response,true);
         }
+        catch(Exception $E)
+        {
+          $reflector = new \ReflectionClass($E);
+          $classProperty = $reflector->getProperty('message');
+          $classProperty->setAccessible(true);
+          $data = $classProperty->getValue($E);
+          $data = "Tidak dapat terkoneksi ke server BPJS, silakan dicoba lagi";
+          $data = array("metaData"=>array("message" =>'error',"code"=>777));
+          //die(json_encode(array("res"=>"error","msg"=>$data)));
+
+        }
+
+        if($data["metaData"]["code"]=="500"){
+          die(json_encode(array("res"=>"500","msg"=>$data["metaData"]["message"])));
+        }
+        /*update message ketika nomor kartu tidak ditemukan--> kasus no kartu tidak sama dengan 13*/
+        if($data["metaData"]["code"]=="412"){
+          die(json_encode(array("res"=>"412","msg"=>$data["response"][0]["message"])));
+        }
+
+        return $data;
     }
-    
-    function insert_dataembalase(){
-		$id=$this->session->userdata('klinik');
-    	$this->db->where('code',$id);
-    	$query = $this->db->get('cl_clinic');
-        if ($query->num_rows() > 0){
-            $dataup = array(
-            	'embalase' => $this->input->post('embalase'),
-            	'embalase_harga' => $this->input->post('embalase_harga')
-            );
-            
-            $this->db->where('code',$id);
-            $this->db->update('cl_clinic',$dataup);
-            
-            echo '1';
-        }else{
-        	echo '0';
+
+    function postApi($url="", $data=array()){
+        $this->get_data_bpjs("live");
+
+       try
+        {
+          $response = \Httpful\Request::post($this->server.$url)
+          ->xConsId($this->consid)
+          ->xTimestamp($this->xtime)
+          ->xSignature($this->xsign)
+          ->xAuthorization("Basic ".$this->xauth)
+          ->body($data)
+          ->sendsJson()
+          ->timeout($this->maxxtimepost)
+          ->send();
+          $data = json_decode($response,true);
         }
-	}
-	function insert_puskesmas(){
-        $id=$this->session->userdata('klinik');
-        $this->db->where('code',$id);
-        $query = $this->db->get('cl_clinic');
-        if ($query->num_rows() > 0){
-            $dataup = array(
-                'cd_puskesmas' => $this->input->post('puskesmas'),
-            );
-            
-            $this->db->where('code',$id);
-            $this->db->update('cl_clinic',$dataup);
-            
-            echo '1';
-        }else{
-            echo '0';
+        catch(Exception $E)
+        {
+          $reflector = new \ReflectionClass($E);
+          $classProperty = $reflector->getProperty('message');
+          $classProperty->setAccessible(true);
+          $data = $classProperty->getValue($E);
+          $data = "Tidak dapat terkoneksi ke server BPJS, silakan dicoba lagi";
+          $data = array("metaData"=>array("message" =>'error',"code"=>777));
+          //die(json_encode(array("res"=>"error","msg"=>$data)));
         }
+        //die(print_r($response));
+        // if($response["metaData"]["code"]=="201"){
+
+        // }elseif($response["metaData"]["code"]=="304"){
+
+        // }else{
+
+        // }
+
+        return $data;
     }
-    function insert_databpjs($value=0){
-    	$id=$this->session->userdata('klinik');
-    	$this->db->where('code',$id);
-    	$query = $this->db->get('cl_clinic');
-        if ($query->num_rows() > 0){
-            $dataup = array(
-            	'username' => $this->input->post('usernamebpjs'),
-            	'password' => $this->input->post('passwordbpjs'),
-            	'consid' => $this->input->post('considbpjs'),
-            	'secretkey' => $this->input->post('keybpjs'),
-            );
-            $this->db->where('code',$id);
-            $this->db->update('cl_clinic',$dataup);
-        }else{
-        	$data = array(
-            	'username' => $this->input->post('usernamebpjs'),
-            	'password' => $this->input->post('passwordbpjs'),
-            	'consid' => $this->input->post('considbpjs'),
-            	'secretkey' => $this->input->post('keybpjs'),
-            	'code' => $id,
-            );
-            $this->db->insert('cl_clinic',$data);
+
+    function putApi($url="", $data=array()){
+       $this->get_data_bpjs();
+       try
+        {
+          $response = \Httpful\Request::post($this->server.$url)
+          ->xConsId($this->consid)
+          ->xTimestamp($this->xtime)
+          ->xSignature($this->xsign)
+          ->xAuthorization("Basic ".$this->xauth)
+          ->body($data)
+          ->sendsJson()
+          ->timeout($this->maxxtimepost)
+          ->send();
         }
+        catch(Exception $E)
+        {
+          $reflector = new \ReflectionClass($E);
+          $classProperty = $reflector->getProperty('message');
+          $classProperty->setAccessible(true);
+          $data = $classProperty->getValue($E);
+          $data = "Tidak dapat terkoneksi ke server BPJS, silakan dicoba lagi";
+          die(json_encode(array("res"=>"error","msg"=>$data)));
+        }
+        $data = json_decode($response,true);
+
+        if($response["metaData"]["code"]=="200"){
+
+        }else{
+
+        }
+
+        return $data;
     }
-    
-    function get_data_klinik(){
-    	$this->db->where('code',$this->session->userdata('klinik'));
-    	return $this->db->get('cl_clinic')->result();
+
+    function deleteApi($url=""){
+       $this->get_data_bpjs();
+       try
+        {
+          $response = \Httpful\Request::delete($this->server.$url)
+          ->xConsId($this->consid)
+          ->xTimestamp($this->xtime)
+          ->xSignature($this->xsign)
+          ->xAuthorization("Basic ".$this->xauth)
+          ->send();
+          $data = json_decode($response,true);
+        }
+        catch(Exception $E)
+        {
+          $reflector = new \ReflectionClass($E);
+          $classProperty = $reflector->getProperty('message');
+          $classProperty->setAccessible(true);
+          $data = $classProperty->getValue($E);
+          $data = "Tidak dapat terkoneksi ke server BPJS, silakan dicoba lagi";
+          $data = array("metaData"=>array("message" =>'error',"code"=>777));
+        }
+        return $data;
+    }
+
+    function bpjs_search($by="nik",$no){
+        if($by == "nik"){
+            $data = $this->getApi('peserta/nik/'.$no,2);
+        }else{
+            $data = $this->getApi('peserta/'.$no,2);
+        }
+
+        return $data;
     }
 
     function get_data()
@@ -138,65 +195,24 @@ class Bpjs_model extends CI_Model {
         return $data;
     }
 
-    function get_theme()
+    function update_bpjs()
     {
-        $query = $this->db->get('app_theme');
-        foreach($query->result_array() as $key=>$dt){
-			$data[$dt['id_theme']]=$dt['name']." :: ".$dt['folder'];
-		}
-		$query->free_result();    
-		return $data;
-    }
-	
-    function update_entry()
-    {
-		$theme_default['value']=$this->input->post('theme_default');
-		$this->db->update($this->tabel, $theme_default, array('key' => 'theme_default'));
+		$consid['value']=$this->input->post('bpjs_consid');
+		$this->db->update($this->tabel, $consid, array('key' => 'bpjs_consid'));
 
-		$theme_offline['value']=$this->input->post('theme_offline');
-		$this->db->update($this->tabel, $theme_offline, array('key' => 'theme_offline'));
+        $secret['value']=$this->input->post('bpjs_secret');
+        $this->db->update($this->tabel, $secret, array('key' => 'bpjs_secret'));
 
-		$title['value']=$this->input->post('title');
-		$this->db->update($this->tabel, $title, array('key' => 'title'));
+        $username['value']=$this->input->post('bpjs_username');
+        $this->db->update($this->tabel, $username, array('key' => 'bpjs_username'));
 
-		if($this->input->post('online')){
-			$online['value']=1;
-		}else{
-			$online['value']=0;
-		}
-		$this->db->update($this->tabel, $online, array('key' => 'online'));
+        $password['value']=$this->input->post('bpjs_password');
+        $this->db->update($this->tabel, $password, array('key' => 'bpjs_password'));
 
-		$description['value']=$this->input->post('description');
-		$this->db->update($this->tabel, $description, array('key' => 'description'));
-
-		$keywords['value']=$this->input->post('keywords');
-		$this->db->update($this->tabel, $keywords, array('key' => 'keywords'));
-		
-		$bpjs_server['value']=$this->input->post('serverbpjs');
-		$this->db->update($this->tabel, $bpjs_server, array('key' => 'bpjs_server'));
+        $status['value']=$this->input->post('bpjs_status');
+        $this->db->update($this->tabel, $status, array('key' => 'bpjs_status'));
 		
 		return true;
-    }
-	function get_puskesmas($start=0,$limit=99999){
-        return $this->db->get('cl_phc',$limit,$start)->result_array();
-    }
-    function get_data_puskesmas(){
-        $this->db->select('cd_puskesmas');
-        $this->db->where('code',$this->session->userdata('klinik'));
-        return $this->db->get('cl_clinic')->row_array();   
-    }
-    function get_nmpuskesmas(){
-        $this->db->select("cl_phc.value");
-        $this->db->join('cl_phc','cl_phc.code = cl_clinic.cd_puskesmas');
-        $this->db->where('cl_clinic.code',$this->session->userdata('klinik'));
-        $query = $this->db->get('cl_clinic');
-        if ($query->num_rows() > 0) {
-            $dt = $query->row_array();
-            $data = $dt['value'];
-        }else{
-            $data = '-';
-        }
-        return $data;
     }
 }
 
