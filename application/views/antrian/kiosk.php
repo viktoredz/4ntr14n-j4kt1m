@@ -286,4 +286,10 @@
     $("#popup").jqxWindow('close');
   }
 
+  function front(){
+    $("#popup").jqxWindow('close');
+    $("#search").hide();
+    $("#front").show('fade');
+  }
+
 </script>

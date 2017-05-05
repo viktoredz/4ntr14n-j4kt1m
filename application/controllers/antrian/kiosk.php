@@ -39,7 +39,7 @@ class Kiosk extends CI_Controller {
 					);
 				}else{
 					$data = array(
-						'content'	=> "Maaf ".$pasien->nama.",<br><b>Status BPJS</b> anda TIDAK AKTIF.<br><br>Silahkan melakukan pendaftaran melalui<br><b>LOKET PENDAFTARAN</b><br><br>Terimakasih.<br><br><button class='btn-lg btn-success' onClick='tutup()' style='width:200px'>OK</button>"
+						'content'	=> "Maaf ".$pasien->nama.",<br><b>Status BPJS</b> anda TIDAK AKTIF.<br><br>Silahkan mendaftar melalui<br><b>LOKET PENDAFTARAN</b><br>Ambil Nomor Antrian Loket Sebagai<br><b>PASIEN BARU</b><br><br>Terimakasih.<br><br><button class='btn-lg btn-success' onClick='front();' style='width:200px'>OK</button>"
 					);
 				}
 			}else{
@@ -76,7 +76,7 @@ class Kiosk extends CI_Controller {
 					);
 				}else{
 					$data = array(
-						'content'	=> "Maaf ".$pasien->nama.",<br><b>Status BPJS</b> anda TIDAK AKTIF.<br><br>Silahkan melakukan pendaftaran melalui<br><b>LOKET PENDAFTARAN</b><br><br>Terimakasih.<br><br><button class='btn-lg btn-success' onClick='tutup()' style='width:200px'>OK</button>"
+						'content'	=> "Maaf ".$pasien->nama.",<br><b>Status BPJS</b> anda TIDAK AKTIF.<br><br>Silahkan mendaftar melalui<br><b>LOKET PENDAFTARAN</b><br>Ambil Nomor Antrian Loket Sebagai<br><b>PASIEN BARU</b><br><br>Terimakasih.<br><br><button class='btn-lg btn-success' onClick='front();' style='width:200px'>OK</button>"
 					);
 				}
 			}else{
@@ -112,7 +112,7 @@ class Kiosk extends CI_Controller {
 				);
 			}else{
 				$data = array(
-					'content'	=> "Maaf ".$pasien->nama.",<br><b>Status BPJS</b> anda TIDAK AKTIF.<br><br>Silahkan melakukan pendaftaran melalui<br><b>LOKET PENDAFTARAN</b><br><br>Terimakasih.<br><br><button class='btn-lg btn-success' onClick='tutup()' style='width:200px'>OK</button>"
+					'content'	=> "Maaf ".$pasien->nama.",<br><b>Status BPJS</b> anda TIDAK AKTIF.<br><br>Silahkan mendaftar melalui<br><b>LOKET PENDAFTARAN</b><br>Ambil Nomor Antrian Loket Sebagai<br><b>PASIEN BARU</b><br><br>Terimakasih.<br><br><button class='btn-lg btn-success' onClick='front();' style='width:200px'>OK</button>"
 				);
 			}
 		}else{
