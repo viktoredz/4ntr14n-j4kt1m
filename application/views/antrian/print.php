@@ -7,6 +7,8 @@
   <div style="font-size:50px;font-weight:bold">{nomor}</div>
   <?php if(!isset($pasien['bpjs']) || $pasien['bpjs'] == ""){ ?>
   <div>PASIEN UMUM<br><b>Silahkan Menuju LOKET untuk melakukan PEMBAYARAN</b><br><br></div>
+  <?php }else{ ?>
+  <div>Silahkan lakukan verifikasi di LOKET<br><br></div>
   <?php } ?>
   <div style="text-align:left">
     <div class="row">
