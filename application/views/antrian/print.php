@@ -1,4 +1,4 @@
-<div style="text-align:center;width:180px;font-size:14px">
+<div style="margin-left:-100px;text-align:center;width:200px;font-size:13px">
   <div>
     <b>PUSKESMAS {puskesmas}</b><br>
     {alamat}<br>
