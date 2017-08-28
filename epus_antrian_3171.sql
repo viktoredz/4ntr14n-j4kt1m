@@ -299,7 +299,7 @@ CREATE TABLE `app_users_list` (
 
 LOCK TABLES `app_users_list` WRITE;
 /*!40000 ALTER TABLE `app_users_list` DISABLE KEYS */;
-INSERT INTO `app_users_list` VALUES ('antrian','3171030201','administrator','e7b53e05a7aa52551333871ca8943d8a8d380f57',1,1,1,1503605148,1503605955,NULL);
+INSERT INTO `app_users_list` VALUES ('antrian','3171030201','administrator','e7b53e05a7aa52551333871ca8943d8a8d380f57',1,1,1,1503605148,1503889746,NULL);
 /*!40000 ALTER TABLE `app_users_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -507,7 +507,6 @@ CREATE TABLE `cl_loket` (
 
 LOCK TABLES `cl_loket` WRITE;
 /*!40000 ALTER TABLE `cl_loket` DISABLE KEYS */;
-INSERT INTO `cl_loket` VALUES ('2017-05-04',1,2),('2017-05-04',2,2),('2017-05-04',3,2),('2017-05-04',4,2),('2017-05-04',5,2),('2017-05-04',6,2),('2017-05-04',7,2),('2017-05-04',8,2),('2017-05-04',9,2),('2017-05-04',10,2),('2017-05-04',11,2),('2017-05-04',12,1),('2017-05-04',13,1),('2017-05-04',14,0),('2017-05-04',15,0),('2017-05-04',16,0),('2017-05-04',17,0),('2017-05-04',18,0),('2017-05-04',19,0),('2017-05-04',20,0),('2017-05-04',21,0),('2017-05-05',1,2),('2017-05-05',2,2),('2017-05-05',3,2),('2017-05-05',4,2),('2017-05-05',5,2),('2017-05-05',6,2),('2017-05-05',7,2),('2017-05-05',8,1),('2017-05-05',9,1),('2017-05-05',10,0),('2017-05-05',11,0),('2017-05-05',12,0),('2017-05-05',13,0),('2017-05-05',14,0),('2017-05-09',1,1),('2017-05-09',2,1),('2017-05-09',3,0),('2017-05-09',4,0),('2017-05-09',5,0),('2017-05-09',6,0),('2017-07-06',1,0),('2017-07-06',2,0),('2017-07-06',3,0);
 /*!40000 ALTER TABLE `cl_loket` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -524,7 +523,7 @@ CREATE TABLE `cl_news` (
   `status` char(2) NOT NULL,
   `code` char(11) NOT NULL,
   PRIMARY KEY (`id`,`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -533,7 +532,7 @@ CREATE TABLE `cl_news` (
 
 LOCK TABLES `cl_news` WRITE;
 /*!40000 ALTER TABLE `cl_news` DISABLE KEYS */;
-INSERT INTO `cl_news` VALUES (3,'Selamat datang di puskesmas kami, semoga bapak-ibu lekas sembuh.','1','P3671010201'),(5,'www.infokes.id','1','P3671010201'),(7,'Selamat datang di Puskesmas Kecamatan Makasar, Kami akan selalu melayani anda dengan Ramah, Nyaman dan Cepat. Terima kasih sudah berkunjung, semoga sehat selalu','1','P3172040201');
+INSERT INTO `cl_news` VALUES (3,'Selamat datang di puskesmas kami, semoga bapak-ibu lekas sembuh.','1','P3171030201'),(5,'www.infokes.id','1','P3171030201');
 /*!40000 ALTER TABLE `cl_news` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -614,7 +613,7 @@ CREATE TABLE `cl_phc` (
 
 LOCK TABLES `cl_phc` WRITE;
 /*!40000 ALTER TABLE `cl_phc` DISABLE KEYS */;
-INSERT INTO `cl_phc` VALUES ('P3171030201','KEC. CILANDAK','PKCM');
+INSERT INTO `cl_phc` VALUES ('P3171030201','KEC. CILANDAK','PKCC'),('P3171030202','KEL. GANDARIA SELATAN','GS'),('P3171030203','KEL. CIPETE SELATAN','CS'),('P3171030204','KEL. CILANDAK BARAT','CB'),('P3171030205','KEL. LEBAK BULUS','LB'),('P3171030206','KEL. PONDOK LABU','PL');
 /*!40000 ALTER TABLE `cl_phc` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -642,7 +641,7 @@ CREATE TABLE `cl_phc_bpjs` (
 
 LOCK TABLES `cl_phc_bpjs` WRITE;
 /*!40000 ALTER TABLE `cl_phc_bpjs` DISABLE KEYS */;
-INSERT INTO `cl_phc_bpjs` VALUES ('P3171030201','http://api.bpjs-kesehatan.go.id/pcare-rest/v1/','09020700','123456','10103','0kX6D9C6D4');
+INSERT INTO `cl_phc_bpjs` VALUES ('P3171030201','http://api.bpjs-kesehatan.go.id/pcare-rest/v1/','09020700','123456','10103','0kX6D9C6D4'),('P3171030202','http://api.bpjs-kesehatan.go.id/pcare-rest/v1/',NULL,NULL,NULL,NULL),('P3171030203','http://api.bpjs-kesehatan.go.id/pcare-rest/v1/',NULL,NULL,NULL,NULL),('P3171030204','http://api.bpjs-kesehatan.go.id/pcare-rest/v1/',NULL,NULL,NULL,NULL),('P3171030205','http://api.bpjs-kesehatan.go.id/pcare-rest/v1/',NULL,NULL,NULL,NULL),('P3171030206','http://api.bpjs-kesehatan.go.id/pcare-rest/v1/',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `cl_phc_bpjs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -700,7 +699,7 @@ CREATE TABLE `cl_video` (
 
 LOCK TABLES `cl_video` WRITE;
 /*!40000 ALTER TABLE `cl_video` DISABLE KEYS */;
-INSERT INTO `cl_video` VALUES (7,'gigi.mp4','1','3172040201'),(11,'branding_for_android.mp4','1','P3172040201'),(12,'Ayo_Cegah_Hipertensi_(Indonesian_Society_of_Hypertension)_-_YouTube.MP4','1','3172040201'),(13,'Ayo_Cegah_Hipertensi_(Indonesian_Society_of_Hypertension)_-_YouTube1.MP4','1','P3172040201'),(14,'hot.mp4','1','P3172040201'),(15,'cegah_hipertensi.MP4','1','P3172040201'),(16,'hak_kewajiban_pasien_puskesmas_kecamatan_makasar,_jakarta_timur_-_YouTube.MP4','1','P3172040201');
+INSERT INTO `cl_video` VALUES (7,'gigi.mp4','1','P3171030201'),(11,'branding_for_android.mp4','1','P3171030201'),(12,'Ayo_Cegah_Hipertensi_(Indonesian_Society_of_Hypertension)_-_YouTube.MP4','1','P3171030201'),(13,'Ayo_Cegah_Hipertensi_(Indonesian_Society_of_Hypertension)_-_YouTube1.MP4','1','P3171030201'),(14,'hot.mp4','1','P3171030201'),(15,'cegah_hipertensi.MP4','1','P3171030201'),(16,'hak_kewajiban_pasien_puskesmas_kecamatan_makasar,_jakarta_timur_-_YouTube.MP4','1','P3171030201');
 /*!40000 ALTER TABLE `cl_video` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -713,4 +712,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-25  3:19:15
+-- Dump completed on 2017-08-28 10:14:16
