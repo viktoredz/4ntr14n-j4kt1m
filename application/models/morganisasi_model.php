@@ -26,6 +26,13 @@ class Morganisasi_model extends CI_Model {
       return $data;
     }
 
+    function get_jml_testimoni($status='puas'){
+	  $this->db->where('status',$status);
+      $data = $this->db->get('cl_testimoni')->num_rows();
+
+      return $data;
+    }
+
     function get_datawhere($code,$condition,$table){
         $this->db->select("*");
         $this->db->like($condition,$code);

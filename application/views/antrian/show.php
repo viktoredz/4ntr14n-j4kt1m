@@ -1,6 +1,6 @@
 <!-- Info boxes -->
 <div class="row">
-  <div class="col-md-3 col-sm-6 col-xs-12">
+  <div class="col-md-4 col-sm-6 col-xs-12">
     <a href="<?php echo base_url();?>antrian/pasien">
     <div class="info-box">
       <span class="info-box-icon bg-green"><i class="ion ion-ios-people-outline"></i></span>
@@ -11,7 +11,7 @@
     </div><!-- /.info-box -->
     </a>
   </div><!-- /.col -->
-  <div class="col-md-3 col-sm-6 col-xs-12">
+  <div class="col-md-4 col-sm-6 col-xs-12">
     <a href="#" onclick="window.open('<?php echo base_url();?>antrian/tv', 'newwindow', 'menubar=no,location=no,resizable=no,scrollbars=no,fullscreen=yes, scrollbars=auto'); return false;">
     <div class="info-box">
       <span class="info-box-icon bg-red"><i class="fa fa-sort-numeric-asc"></i></span>
@@ -26,7 +26,41 @@
   <!-- fix for small devices only -->
   <div class="clearfix visible-sm-block"></div>
 
-  <div class="col-md-3 col-sm-6 col-xs-12">
+  <div class="col-md-4 col-sm-6 col-xs-12">
+    <a href="#" onclick="window.open('<?php echo base_url();?>antrian/kiosk', 'newwindow', 'menubar=no,location=no,resizable=no,scrollbars=no,fullscreen=yes, scrollbars=auto'); return false;">
+    <div class="info-box">
+      <span class="info-box-icon bg-blue"><i class="fa fa-tv"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">KIOSK</span>
+        <span class="info-box-number">Full<BR>Screen</span>
+      </div><!-- /.info-box-content -->
+    </div><!-- /.info-box -->
+    </a>
+  </div><!-- /.col -->
+  <div class="col-md-4 col-sm-6 col-xs-12">
+    <a href="<?php echo base_url();?>poli">
+    <div class="info-box">
+      <span class="info-box-icon bg-gray"><i class="fa fa-qrcode"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">POLI LAYANAN</span>
+        <span class="info-box-number"><?php echo count($poli)?></span>
+      </div><!-- /.info-box-content -->
+    </div><!-- /.info-box -->
+    </a>
+  </div><!-- /.col -->
+  <div class="col-md-4 col-sm-6 col-xs-12">
+    <a href="#" onclick="window.open('<?php echo base_url();?>testimoni/fullscreen', 'newwindow', 'menubar=no,location=no,resizable=no,scrollbars=no,fullscreen=yes, scrollbars=auto'); return false;">
+    <div class="info-box">
+      <span class="info-box-icon bg-purple"><i class="fa fa-comments"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">TESTIMONI PASIEN</span>
+        <span class="info-box-number"><i class="fa fa-thumbs-up"></i> {testimoni_up}</span>
+        <span class="info-box-number"><i class="fa fa-thumbs-o-down"></i> {testimoni_down}</span>
+      </div><!-- /.info-box-content -->
+    </div><!-- /.info-box -->
+    </a>
+  </div><!-- /.col -->
+  <div class="col-md-4 col-sm-6 col-xs-12">
     <input type="hidden" name="status_panggilan" value="0">
     <input type="hidden" name="status_panggilan_interval">
     <input type="hidden" name="status_loket" value="0">
@@ -42,33 +76,9 @@
     </div><!-- /.info-box -->
     </a>
   </div><!-- /.col -->
-  <div class="col-md-3 col-sm-6 col-xs-12">
-    <a href="#" onclick="window.open('<?php echo base_url();?>antrian/kiosk', 'newwindow', 'menubar=no,location=no,resizable=no,scrollbars=no,fullscreen=yes, scrollbars=auto'); return false;">
-    <div class="info-box">
-      <span class="info-box-icon bg-blue"><i class="fa fa-tv"></i></span>
-      <div class="info-box-content">
-        <span class="info-box-text">KIOSK</span>
-        <span class="info-box-number">Full<BR>Screen</span>
-      </div><!-- /.info-box-content -->
-    </div><!-- /.info-box -->
-    </a>
-  </div><!-- /.col -->
 </div><!-- /.row -->
 
 <div class="row">
-  <div class="col-md-6">
-    <div class="box">
-      <div class="box-header with-border">
-        <h3 class="box-title">Antrian Pasien </h3>
-        <div class="box-tools pull-right">
-          <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-          <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-        </div>
-      </div><!-- /.box-header -->
-        <div class="box-body" id="antrian">
-        </div><!-- /.box-body -->
-    </div><!-- /.box -->
-  </div><!-- /.col -->
   <div class="col-md-3">
     <div class="box">
       <div class="box-header with-border">
@@ -102,28 +112,21 @@
           <label>Antrian Loket<br>Not Running</label>
         </div><!-- /.box-body -->
     </div>
-  <!--
-  <div class="col-md-3">
+  </div><!-- /.row -->
+
+  <div class="col-md-6">
     <div class="box">
       <div class="box-header with-border">
-        <h3 class="box-title">Daftar Poli </h3>
+        <h3 class="box-title">Antrian Pasien </h3>
         <div class="box-tools pull-right">
           <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
           <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
         </div>
-      </div>
-        <div class="box-body">
-          <?php foreach ($poli as $rows) {
-          ?>
-            <div class="col-md-12">
-              <label><?php echo $rows['value']?></label> 
-            </div>
-          <?php
-          }?>
-        </div>
-    </div>
-  </div>-->
-</div><!-- /.row -->
+      </div><!-- /.box-header -->
+        <div class="box-body" id="antrian">
+        </div><!-- /.box-body -->
+    </div><!-- /.box -->
+  </div><!-- /.col -->
 
 <div id="popup_info" style="display:none;">
   <div id="popup_info_title">eClinic</div>

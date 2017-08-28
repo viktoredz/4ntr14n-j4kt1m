@@ -196,6 +196,13 @@ class Antrian_model extends CI_Model {
       return $pasien;
     }
 
+    function get_testimoni(){
+      $this->db->join('cl_phc','cl_testimoni.code = cl_phc.code','inner');
+      $this->db->order_by('id','desc');
+      $query = $this->db->get('cl_testimoni');
+      return $query->result();
+    }
+
     function get_news(){
       $this->db->join('cl_phc','cl_news.code = cl_phc.code','inner');
       $query = $this->db->get('cl_news');
@@ -206,6 +213,17 @@ class Antrian_model extends CI_Model {
       $this->db->join('cl_phc','cl_video.code = cl_phc.code','inner');
       $query = $this->db->get('cl_video');
       return $query->result();
+    }
+
+    function get_testimoni_by_id($id){
+      $data = array();
+      $this->db->where('id', $id);
+      $query = $this->db->get('cl_testimoni')->row_array();
+      if($query){
+        return $query;
+      }else{
+        return $data;
+      }
     }
 
     function get_news_by_id($id){
@@ -239,8 +257,27 @@ class Antrian_model extends CI_Model {
       }
     }
 
+    function add_testimoni($data){
+      $query = $this->db->insert('cl_testimoni', $data);
+      if($query){
+        return TRUE;
+      }else{
+        return FALSE;
+      }
+    }
+
     function add_video($data){
       $query = $this->db->insert('cl_video', $data);
+      if($query){
+        return TRUE;
+      }else{
+        return FALSE;
+      }
+    }
+
+    function update_testimoni($id,$data){
+      $this->db->where('id', $id);
+      $query = $this->db->update('cl_testimoni', $data);
       if($query){
         return TRUE;
       }else{
@@ -268,10 +305,15 @@ class Antrian_model extends CI_Model {
       }
     }
 
-    function delete_news($id){
+    function delete_testimoni($id){
   		$this->db->where('id',$id);
-  		return $this->db->delete('cl_news');
+  		return $this->db->delete('cl_testimoni');
   	}
+
+    function delete_news($id){
+      $this->db->where('id',$id);
+      return $this->db->delete('cl_news');
+    }
 
     function delete_video($id){
   		$this->db->where('id',$id);

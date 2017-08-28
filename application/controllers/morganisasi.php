@@ -11,6 +11,8 @@ class Morganisasi extends CI_Controller {
 		$data['title_group'] 	= "Antrian";
 		$data['title_form'] 	= "Dashboard";
 		$data['pbk'] 			= number_format($this->morganisasi_model->get_jml_pasien());
+		$data['testimoni_up'] 	= number_format($this->morganisasi_model->get_jml_testimoni('puas'));
+		$data['testimoni_down'] = number_format($this->morganisasi_model->get_jml_testimoni('tidak'));
 		$data['panggilan'] 		= $this->morganisasi_model->get_panggilan();
 		$data['poli'] 			= $this->morganisasi_model->get_poli();
 
