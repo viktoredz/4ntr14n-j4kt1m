@@ -15,7 +15,7 @@
           <div class="box-body">
             <div class="form-group">
               <label>- SILAHKAN TULISKAN KESAN DAN PESAN ATAU KRITIK DAN SARAN ANDA -</label>
-              <textarea class="form-control" placeholder="Konten" name="content" style="height: 180px;font-size:22px" id="konten"></textarea>
+              <textarea class="form-control" placeholder="Tulis pesan anda" name="content" style="height: 180px;font-size:22px" id="konten"></textarea>
             </div>
           </div>
           <div class="box-footer pull-center">
